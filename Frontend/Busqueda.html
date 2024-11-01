@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda</title>
+    <style>
+        nav {
+  float: left;
+  width: 24.3%;
+  height: 300px; /* only for demonstration, should be removed */
+  background: #ccc;
+  padding: 20px;
+}
+
+/* Style the list inside the menu */
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+  height: 300px; /* only for demonstration, should be removed */
+}
+
+@media (max-width: 600px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+.center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            height: auto;
+        }
+</style>
+
+    </style>
+</head>
+<body>
+    <h2>Resultados de Búsqueda</h2>
+    <div id="job-list" class="clearfix"></div>
+
+    <script>
+        // Obtener resultados desde la URL
+        const queryParams = new URLSearchParams(window.location.search);
+        const resultados = JSON.parse(decodeURIComponent(queryParams.get('resultados')));
+
+        const jobList = document.getElementById('job-list');
+
+        // Mostrar los resultados de la búsqueda
+        if (resultados && resultados.length > 0) {
+            resultados.forEach(job => {
+              const jobDiv = document.createElement('div');
+                jobDiv.innerHTML = `<h3>${job.titulo}</h3>
+                                    <p>Categoría: ${job.categoria}</p>
+                                    <p>Área: ${job.area}</p>
+                                    <p>Ubicación: ${job.ubicacion}</p>
+                                    <p>Salario: ${job.salario}</p>`;
+                jobDiv.className = 'job';
+                jobList.appendChild(jobDiv);
+            });
+        } else {
+            jobList.innerHTML = '<p>No se encontraron resultados.</p>';
+        }
+    </script>
+</body>
+</html>

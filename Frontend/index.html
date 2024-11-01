@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Página de Búsqueda de Empleo</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(180deg,#2227cb,#f8f9fa); 
+        }
+
+        /* Estilos para el encabezado de la página */
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px; 
+            background-color: #f8f9fa; 
+        } 
+
+        /* Estilo para el logo */
+        #logo { 
+            height: 50px; 
+            width: auto; 
+        } 
+
+        /* Estilo para el enlace de iniciar sesión */
+        #login { 
+            font-size: 16px; 
+        } 
+
+        /* Estilos para el área de búsqueda de empleo */
+        #search { 
+            margin: 20px 0; 
+        } 
+
+        /* Estilos para los selectores de búsqueda */
+        #search select { 
+            margin-right: 10px; 
+        } 
+
+        /* Estilos para la lista de trabajos */
+        #job-list { 
+            margin-top: 35px; 
+            border: 1px solid #ccc; 
+            text-align: left;
+            width: 100%;
+            margin: auto;
+        } 
+
+        /* Estilos para cada trabajo individual en la lista */
+        #job { 
+            padding: 10px; 
+            border: 1px solid #ccc;
+            margin-bottom: 10px; 
+            width: 70%;
+            float: left;
+            background-color:transparent;
+            
+        } 
+        #jobimage {
+            width:20%; 
+            height:150px;
+            border: 1px solid #ccc; 
+            background-color: transparent; 
+            float:right; 
+            display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden
+        }
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            height: auto;
+        }
+        /* Estilos para los enlaces de autenticación */
+#auth-links {
+    display: flex;
+    gap: 15px; /* Espacio entre los enlaces */
+}
+/* Create two columns/boxes that floats next to each other */
+nav {
+  float: left;
+  width: 24.3%;
+  height: 300px; /* only for demonstration, should be removed */
+  background: #ccc;
+  padding: 20px;
+}
+
+/* Style the list inside the menu */
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+  height: 300px; /* only for demonstration, should be removed */
+}
+
+/* Clear floats after the columns */
+section::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the footer */
+footer {
+  background-color: #777;
+  padding: 10px;
+  text-align: left;
+  color: white;
+}
+/* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+@media (max-width: 600px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+
+
+
+    </style>
+</head>
+<scripr src="index.js"></scripr>
+<body>
+    <header>
+      <img id="logo" src="logo.png" alt="Logo de la Empresa" >
+      <div id="auth-links">
+          <a id="login" href="login.html">Iniciar Sesión</a>
+          <a id="register" href="Registrarse.html">Registrarse</a>
+      </div>
+
+    </header>
+
+    <div id="search">
+        <h2>Buscar Empleo</h2>
+        <form id="searchForm">
+            <input type="text" name="categoria" list="Categoria" placeholder="Categoria"/>
+            <datalist id="Categoria">
+                <option>Tecnologia</option>
+                <option>Salud</option>
+                <option>Educacion</option>
+            </datalist>
+
+            <input type="text" name="area" list="Area" placeholder="Area"/>
+            <datalist id="Area">
+                <option>Desarrollo</option>
+                <option>Diseño</option>
+                <option>Marketing</option>
+            </datalist>
+
+            <input type="text" name="ubicacion" list="Ubicacion" placeholder="Ubicacion"/>
+            <datalist id="Ubicacion">
+                <option>Remoto</option>
+                <option>Oficina</option>
+            </datalist>
+
+            <input type="text" name="salario" list="Salario" placeholder="Salario"/>
+            <datalist id="Salario">
+                <option>Menos de 30.000</option>
+                <option>Entre 30.000 y 60.000</option>
+                <option>Mas de 60.000</option>
+            </datalist>
+
+            <input type="submit" value="Enviar"/>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita que el formulario recargue la página
+
+            const formData = new FormData(event.target);
+            const data = {
+                categoria: formData.get('categoria'),
+                area: formData.get('area'),
+                ubicacion: formData.get('ubicacion'),
+                salario: formData.get('salario')
+            };
+
+            // Envía los datos al servidor usando fetch
+            fetch('/buscar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Redirige a Busqueda.html con los resultados
+                if (data.length > 0) {
+                    window.location.href = 'Busqueda.html?resultados=' + encodeURIComponent(JSON.stringify(data));
+                } else {
+                    alert('No se encontraron resultados.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+
+    <!-- Lista de empleos disponibles -->
+    <div id="job-list" class="clearfix"> 
+        <h2>Empleos Destacados</h2> 
+
+        <!-- Primer trabajo -->
+
+        <div id="job"> 
+            <h3>Desarrollador Web</h3> 
+            <p>Ubicación: Remoto  </p> 
+            <p>Salario: $50,000 - $60,000</p> 
+        </div> 
+            <div id ="jobimage">
+            <a href="Detalles.html">
+            <p>  <img id="logo" src="V:\aaa.jpg" alt="Logo de la Empresa" class ="center" >   </p>
+            </a>
+            </div>
+
+        <!-- Segundo trabajo -->
+        <div id="job"> 
+            <h3>Diseñador Gráfico</h3> 
+            <p>Ubicación: Oficina</p> 
+            <p>Salario: $30,000 - $40,000</p> 
+        </div> 
+        <div id ="jobimage">
+          <a href="Detalles.html">
+            <p>  <img id="logo" src="V:\aaa.jpg" alt="Logo de la Empresa" class ="center" >   </p>
+            </a>
+            </div>
+        <!-- Tercer trabajo -->
+        <div id="job"> 
+            <h3>Especialista en Marketing</h3> 
+            <p>Ubicación: Remoto</p> 
+            <p>Salario: $40,000 - $50,000</p> 
+        </div> 
+        <div id ="jobimage">
+          <a href="Detalles.html">
+            <p>  <img id="logo" src="V:\aaa.jpg" alt="Logo de la Empresa" class ="center" >   </p>
+            </a>
+            </div>
+
+    </div> 
+    <section>
+        <nav>
+          <ul>
+            <li><img id="logo" src="V:\aaa.jpg" alt="Logo de la Empresa" class ="center" ></li>
+          </ul>
+        </nav>
+        
+        <article>
+          <h1>Credenciales</h1>
+          <p>En esta parte de la pagina podrian ir todas aquellas empresas relacionadas con la pagina</p>
+          <p>Iria acompañado de un texto tipo: "Algunas de las empresas mas reconocidas que nos apoyan son: x y y z"</p>
+        </article>
+      </section>
+      <section>
+        <nav>
+          <ul>
+            <img id="logo" src="V:\aaa.jpg" alt="Logo de la Empresa" class ="center" >
+          </ul>
+        </nav>
+        
+        <article>
+          <h1>Problemas?</h1>
+          <p>Inicia sesion! Al crear una cuenta en job rescue tienes los siguientes beneficios:</p>
+          <p>x y y z</p>
+        </article>
+      </section>
+      
+      <footer>
+        <p>Contactanos!</p>
+        <div id="auth-links">
+          <a id="login" href="login.html">Redes sociales</a>
+        </div>
+      </footer>
+      
+</body> 
+</html>
